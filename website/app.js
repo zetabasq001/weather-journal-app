@@ -26,20 +26,24 @@ const getWeatherData = async () => {
             },
             body: JSON.stringify(objData)
         })
-        .then(async response => await response.json())
-        .then(data => {
-            const lastElement = data.length - 1;
-            document.getElementById('date').innerHTML = `Date: ${data[lastElement].date}`;
-            document.getElementById('temp').innerHTML = `Temperature: ${Math.round(data[lastElement].temperature)}`;
-            document.getElementById('content').innerHTML = `Feeling ${data[lastElement].feelings} today`;
-            document.getElementById('feelings').value = '';
-            document.getElementById('zip').value = '';
-        })
-        .catch(error => console.log('Post Error: ', error))
+        .then(updateUI())
+        .catch(error => console.log('POST Error: ', error))
     })
-    .catch(error => console.log('Get Error: ', error))
-
+    .catch(error => console.log('GET Error: ', error));
 };
+
+const updateUI = async () => await fetch('/getProjectData')
+.then(async response => await response.json())
+.then(data => {
+    document.getElementById('date').innerHTML = `Date: ${data.date}`;
+    document.getElementById('temp').innerHTML = `Temperature: ${Math.round(data.temperature)} degrees`;
+    document.getElementById('content').innerHTML = `Feeling today: ${data.feelings}`;
+})
+.catch(error => console.log('UI Error: ', error))
+.finally(() => {
+    document.getElementById('feelings').value = '';
+    document.getElementById('zip').value = '';
+});
 
 const button = document.getElementById('generate');
 button.addEventListener('click', getWeatherData); 
