@@ -29,7 +29,13 @@ const getWeatherData = async () => {
         .then(updateUI())
         .catch(error => console.log('POST Error: ', error))
     })
-    .catch(error => console.log('GET Error: ', error));
+    .catch(error => {
+        console.log('GET Error: ', error);
+        if(zipcode === ''){
+            alert('Enter zip code');
+        }
+    })
+    .finally(() => document.getElementById('feelings').value = '');
 };
 
 const updateUI = async () => await fetch('/getProjectData')
