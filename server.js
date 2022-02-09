@@ -27,13 +27,16 @@ app.listen(port, () => {
     console.log(`running on localhost: ${port}`);
 });
 
+// server get route handler
 app.get('/getProjectData', (req, res) => {
     res.send(projectData);
 });
 
+// server post route handler
 app.post('/addToProjectData', (req, res) => {
     const data = req.body;
     
+    // put project data in global endpoint
     projectData.temperature = data.temperature;
     projectData.date = data.date;
     projectData.feelings = data.feelings;

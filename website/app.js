@@ -8,16 +8,21 @@ const apiKey = '&appid=92f2bfc4f07c3ec685481edf7d16a935&units=imperial';
 let d = new Date();
 let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
 
+// get weather data promise chain: fetch, response, post, get and update UI
 const getWeatherData = async () => {
+    // obtain zip code from user to build full url
     const zipcode = document.getElementById('zip').value;
     const url = baseUrl + zipcode + apiKey;
 
+    // fetch web data, then wait for response
     await fetch(url)
     .then(async response => await response.json())
     .then(async data => {
+        // get user data and format project data
         const feelingsToday = document.getElementById('feelings').value;
         const objData = { temperature: data.main.temp, date: newDate, feelings: feelingsToday };
 
+        // then post web data to server
         await fetch('/addToProjectData', {
             method: 'POST',
             credentials: 'same-origin',
@@ -31,6 +36,7 @@ const getWeatherData = async () => {
     })
     .catch(error => {
         console.log('GET Error: ', error);
+        // zip code value empty, then alert user 
         if(zipcode === ''){
             alert('Enter zip code');
         }
@@ -38,6 +44,7 @@ const getWeatherData = async () => {
     .finally(() => document.getElementById('feelings').value = '');
 };
 
+// update UI by fetching project data from server, wait for response, and adding to DOM
 const updateUI = async () => await fetch('/getProjectData')
 .then(async response => await response.json())
 .then(data => {
@@ -51,5 +58,6 @@ const updateUI = async () => await fetch('/getProjectData')
     document.getElementById('zip').value = '';
 });
 
+// event listener responds when generate button is clicked
 const button = document.getElementById('generate');
 button.addEventListener('click', getWeatherData); 
